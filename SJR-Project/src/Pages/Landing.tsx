@@ -1,5 +1,8 @@
 import bglanding from "../assets/bg-landing.jpg";
+import { useNavigate } from "react-router-dom";
+
 const Landing = () => {
+  const navigate = useNavigate();
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
       <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
@@ -27,9 +30,15 @@ const Landing = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
         <h2 className="font-semibold text-[20px] mt-[40px]">Select your role</h2>
-        <button className="bg-white px-[100px] lg:px-[170px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[50px] hover:bg-[#D7904D] hover:text-white">User</button>
-        <button className="bg-white px-[80px] lg:px-[150px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white">Operator</button>
-        <button className="bg-white px-[90px] lg:px-[160px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white">Admin</button>
+        <button className="bg-white px-[100px] lg:px-[170px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[50px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginadmin")}>
+          User
+        </button>
+        <button className="bg-white px-[80px] lg:px-[150px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginoperator")}>
+          Operator
+        </button>
+        <button className="bg-white px-[90px] lg:px-[160px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginadmin")}>
+          Admin
+        </button>
       </div>
     </div>
   );
