@@ -33,7 +33,7 @@ const RegisterUser = () => {
         <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <input type="number" placeholder="Phone Number" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px]">Register</Button>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Register</Button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Have an account ?{" "}
             <span className="text-[#247AF8]">
