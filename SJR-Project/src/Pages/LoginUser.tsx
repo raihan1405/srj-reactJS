@@ -1,6 +1,9 @@
 import bglanding from "../assets/bg-landing.jpg";
 import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+
 const LoginUser = () => {
+  const navigate = useNavigate();
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
       <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
@@ -31,11 +34,11 @@ const LoginUser = () => {
         <input type="text" placeholder="Enter your Username" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" />
         <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px]">Login</Button>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Login</Button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Don't have an account ?{" "}
             <span className="text-[#247AF8]">
-              <button className="hover:text-[#D7904D]">Register</button>
+              <button className="hover:text-[#D7904D]" onClick={() => navigate("/registeruser")}>Register</button>
             </span>{" "}
           </h2>
         </div>

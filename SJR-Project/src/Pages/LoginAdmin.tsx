@@ -30,7 +30,7 @@ const LoginAdmin = () => {
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login Admin</h2>
         <input type="password" placeholder="Enter Your Admin ID" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px]">Login</Button>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Login</Button>
         </div>
       </div>
     </div>

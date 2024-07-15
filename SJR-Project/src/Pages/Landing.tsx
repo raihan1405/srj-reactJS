@@ -30,7 +30,7 @@ const Landing = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
         <h2 className="font-semibold text-[20px] mt-[40px]">Select your role</h2>
-        <button className="bg-white px-[100px] lg:px-[170px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[50px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginadmin")}>
+        <button className="bg-white px-[100px] lg:px-[170px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[50px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginuser")}>
           User
         </button>
         <button className="bg-white px-[80px] lg:px-[150px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginoperator")}>
