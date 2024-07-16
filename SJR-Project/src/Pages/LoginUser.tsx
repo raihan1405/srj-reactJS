@@ -1,14 +1,59 @@
+import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
 import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const LoginUser = () => {
   const navigate = useNavigate();
+
+  // Initialize error message state
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Initialize state for email and password
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Handle input change
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setState({
+      ...state,
+      [e.target.name]: value,
+    });
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const userData = {
+      email: state.email,
+      password: state.password,
+    };
+
+    // Send data to API using Axios
+    axios
+      .post("https://go-restapi-production.up.railway.app/api/login", userData)
+      .then((response) => {
+        // Handle response as needed (e.g., show a success message)
+        console.log(response.status, response.data);
+
+        // Navigate to main user page
+        navigate("/mainuser");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setErrorMessage("Email or password is incorrect");
+      });
+  };
+
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
-      <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
+      <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex" style={{ backgroundImage: `url(${bglanding})` }}>
         <div className="img-container items-center lg:mx-[200px] 2xl:mx-[200px] hidden 2xl:flex">
-          <div className="img-content bg-black bg-opacity-60 backdrop-blur-sm  flex flex-col rounded-[30px] px-[40px] py-[60px]">
+          <div className="img-content bg-black bg-opacity-60 backdrop-blur-sm flex flex-col rounded-[30px] px-[40px] py-[60px]">
             <h2 className="text-white text-[50px] font-bold">
               <span className="text-[rgb(215,144,77)]">Inventory</span> Management System
             </h2>
@@ -29,16 +74,21 @@ const LoginUser = () => {
             </svg>
           </span>
         </h2>
-        <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
+        <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy</h2>
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login User</h2>
-        <input type="text" placeholder="Enter your Username" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" />
-        <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
+        <input type="text" name="email" placeholder="Enter your Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" value={state.email} onChange={handleChange} />
+        <input type="password" name="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={state.password} onChange={handleChange} />
+        {errorMessage && <div className="text-red-500 mt-[10px]">{errorMessage}</div>}
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Login</Button>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
+            Login
+          </Button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
-            Don't have an account ?{" "}
+            Don't have an account?{" "}
             <span className="text-[#247AF8]">
-              <button className="hover:text-[#D7904D]" onClick={() => navigate("/registeruser")}>Register</button>
+              <button className="hover:text-[#D7904D]" onClick={() => navigate("/registeruser")}>
+                Register
+              </button>
             </span>{" "}
           </h2>
         </div>

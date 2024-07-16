@@ -1,6 +1,32 @@
+import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
 import { Button } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 const RegisterUser = () => {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post("https://go-restapi-production.up.railway.app/api/register", {
+        username,
+        email,
+        phoneNumber,
+        password,
+      });
+      console.log(response.data);
+      navigate("/loginuser");
+    } catch (error) {
+      console.error("Error registering user:", error);
+      console.log("Gabisa rid");
+    }
+  };
+
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
       <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
@@ -28,16 +54,20 @@ const RegisterUser = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Register User</h2>
-        <input type="text" placeholder="Enter your Username" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" />
-        <input type="text" placeholder="Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
-        <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
-        <input type="number" placeholder="Phone Number" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
+        <input type="text" placeholder="Enter your Username" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="text" placeholder="Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="number" placeholder="Phone Number" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Register</Button>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize" onClick={handleRegister}>
+            Register
+          </Button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Have an account ?{" "}
             <span className="text-[#247AF8]">
-              <button className="hover:text-[#D7904D]">Login</button>
+              <button className="hover:text-[#D7904D]" onClick={() => navigate("/loginuser")}>
+                Login
+              </button>
             </span>{" "}
           </h2>
         </div>
