@@ -4,6 +4,7 @@ import LoginUser from "./Pages/LoginUser";
 import RegisterUser from "./Pages/RegisterUser";
 import LoginOperator from "./Pages/LoginOperator";
 import LoginAdmin from "./Pages/LoginAdmin";
+import MainPageUser from "./Pages/MainPageUser";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/registeruser" element={<RegisterUser />} />
         <Route path="/loginoperator" element={<LoginOperator />} />
         <Route path="/loginadmin" element={<LoginAdmin />} />
+        <Route path="/mainuser" element={<MainPageUser />} />
       </Routes>
     </Router>
   );
