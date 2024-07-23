@@ -1,10 +1,11 @@
 import { IconButton, Typography, List, ListItem, ListItemPrefix, ListItemSuffix, Chip, Accordion, AccordionHeader, AccordionBody, Alert, Input, Drawer, Card } from "@material-tailwind/react";
 import React from "react";
-import {PowerIcon} from "@heroicons/react/24/solid";
-
+import { PowerIcon } from "@heroicons/react/24/solid";
+import { useNavigate } from "react-router-dom";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const SidebarUser = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(0);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
@@ -25,7 +26,7 @@ const SidebarUser = () => {
         </div>
         <List>
           <Accordion>
-            <ListItem className="p-0" selected={open === 1}>
+            <ListItem className="p-0" selected={open === 1} onClick={() => navigate("/mainuser")}>
               <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
                 <ListItemPrefix>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#D7904D]">
@@ -36,14 +37,14 @@ const SidebarUser = () => {
                     />
                   </svg>
                 </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
+                <Typography color="blue-gray" className="mr-auto font-normal" onClick={() => navigate("/mainuser")}>
                   Dashboard
                 </Typography>
               </AccordionHeader>
             </ListItem>
           </Accordion>
           <Accordion>
-            <ListItem className="p-0" selected={open === 2}>
+            <ListItem className="p-0" selected={open === 2} onClick={() => navigate("/cartuser")}>
               <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
                 <ListItemPrefix>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#D7904D]">

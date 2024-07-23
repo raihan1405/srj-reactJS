@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<CartPageUser />} />
+        <Route path="/" element={<MainPageUser />} />
         <Route path="/loginuser" element={<LoginUser />} />
         <Route path="/registeruser" element={<RegisterUser />} />
         <Route path="/loginoperator" element={<LoginOperator />} />
