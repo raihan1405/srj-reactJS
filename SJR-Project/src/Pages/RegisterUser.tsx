@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
-import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -59,9 +58,9 @@ const RegisterUser = () => {
         <input type="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="number" placeholder="Phone Number" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize" onClick={handleRegister}>
+          <button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize" onClick={handleRegister}>
             Register
-          </Button>
+          </button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Have an account ?{" "}
             <span className="text-[#247AF8]">

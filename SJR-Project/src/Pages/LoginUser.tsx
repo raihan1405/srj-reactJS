@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
-import { Button } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -17,7 +16,7 @@ const LoginUser = () => {
   });
 
   // Handle input change
-  const handleChange = (e) => {
+  const handleChange = (e : React.ChangeEvent<any>) => {
     const value = e.target.value;
     setState({
       ...state,
@@ -26,7 +25,7 @@ const LoginUser = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e : React.ChangeEvent<any>) => {
     e.preventDefault();
     const userData = {
       email: state.email,
@@ -80,9 +79,9 @@ const LoginUser = () => {
         <input type="password" name="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={state.password} onChange={handleChange} />
         {errorMessage && <div className="text-red-500 mt-[10px]">{errorMessage}</div>}
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
+          <button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] text-white font-semibold rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
             Login
-          </Button>
+          </button>
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Don't have an account?{" "}
             <span className="text-[#247AF8]">
