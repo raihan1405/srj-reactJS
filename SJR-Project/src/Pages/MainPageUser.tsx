@@ -87,6 +87,7 @@ const MainPageUser = () => {
 
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
   return (
+    <React.Fragment>
     <div className="body-main bg-[#F2F2F2] overflow-hidden">
       <div className="container-main flex flex-row min-h-screen">
         <div className="side-bar">
@@ -150,6 +151,7 @@ const MainPageUser = () => {
         </div>
       </div>
     </div>
+    </React.Fragment>
   );
 };
 

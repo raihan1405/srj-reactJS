@@ -27,6 +27,7 @@ const RegisterUser = () => {
   };
 
   return (
+    <React.Fragment>
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
       <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
         <div className="img-container items-center lg:mx-[200px] 2xl:mx-[200px] hidden 2xl:flex">
@@ -72,6 +73,7 @@ const RegisterUser = () => {
         </div>
       </div>
     </div>
+    </React.Fragment>
   );
 };
 
