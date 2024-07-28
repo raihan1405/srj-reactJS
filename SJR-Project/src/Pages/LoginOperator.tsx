@@ -1,5 +1,4 @@
 import bglanding from "../assets/bg-landing.jpg";
-import { Button } from "@material-tailwind/react";
 const LoginOperator = () => {
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
@@ -30,7 +29,7 @@ const LoginOperator = () => {
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login Operator</h2>
         <input type="password" placeholder="Enter Your Operator ID" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize">Login</Button>
+          <button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize">Login</button>
         </div>
       </div>
     </div>
