@@ -55,7 +55,7 @@ const SidebarUser = () => {
           </button>
 
           <hr className="border-grey mt-[30px]"></hr>
-          <button>
+          <button onClick={() => navigate("/profileuser")}>
             <div className="profile flex items-center mt-[30px]">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-7 text-[#D7904D]">
                 <path
