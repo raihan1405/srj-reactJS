@@ -7,6 +7,7 @@ import LoginAdmin from "./Pages/LoginAdmin";
 import MainPageUser from "./Pages/MainPageUser";
 import CartPageUser from "./Pages/CartPageUser";
 import OrderPageUser from "./Pages/OrderPageUser";
+import ProfileUser from "./Pages/ProfileUser";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/mainuser" element={<MainPageUser />} />
         <Route path="/cartuser" element={<CartPageUser />} />
         <Route path="/orderuser" element={<OrderPageUser />} />
+        <Route path="/profileuser" element={<ProfileUser />} />
       </Routes>
     </Router>
   );
