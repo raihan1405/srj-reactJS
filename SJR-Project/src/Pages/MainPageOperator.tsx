@@ -1,8 +1,10 @@
 import SidebarOperator from "../component/SidebarOperator";
 import React, { useState } from "react";
 import { Button } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
-
+const category = ["Router", "Switch", "Access Point", "Repeater"];
+const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
 const products = [
   {
     name: "Mikrotik RB951UI2ND",
@@ -113,18 +115,42 @@ const MainPageOperator = () => {
             </div>
 
             {/* search engine */}
-            <div className="search flex flex-row items-center gap-[80px] mt-[30px]">
+            <div className="search flex flex-row items-center gap-[50px] mt-[30px]">
               <div className="category">
-                <button className="bg-white px-[50px] py-[7px] text-black text-[14px] capitalize font-normal rounded-2xl">Category</button>
+                <Select size="md" label="Select Category" className="w-[220px]">
+                  {category.map((kategori) => (
+                    <SelectItem key={kategori} value={kategori}>
+                      {kategori}
+                    </SelectItem>
+                  ))}
+                </Select>
               </div>
               <div className="brand">
-                <button className="bg-white px-[60px] py-[7px] text-black text-[14px] capitalize font-normal rounded-2xl">Brand</button>
+                <Select size="md" label="Select Brand" className="w-[220px]">
+                  {brand.map((brands) => (
+                    <SelectItem key={brands} value={brands}>
+                      {brands}
+                    </SelectItem>
+                  ))}
+                </Select>
               </div>
               <div className="searchbar">
-                <input placeholder="Search product...." className="bg-white border-none rounded-[15px] px-[20px] py-[5px] w-[350px] shadow-md text-black" onChange={(e) => setSearchTerm(e.target.value)} />
+                <Input
+                  label="Search"
+                  isClearable
+                  radius="lg"
+                  className="w-[350px]"
+                  placeholder="Search Product..."
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  startContent={
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                  }
+                />
               </div>
               <div className="add">
-                <Button className="bg-[#247AF8] text-white font-semibold text-[16px] px-[20px] py-[8px] rounded-2xl" onPress={onAddModalOpen}>
+                <Button size="md" className="bg-[#247AF8] text-white font-semibold text-[16px]" onPress={onAddModalOpen}>
                   Add New Product +
                 </Button>
               </div>
@@ -184,7 +210,7 @@ const MainPageOperator = () => {
               </Modal>
             )}
 
-            <div className="table-of-content mt-[40px]">
+            <div className="table-of-content mt-[25px]">
               <table className="text-left w-[1200px]">
                 <thead>
                   <tr className="text-[16px]">

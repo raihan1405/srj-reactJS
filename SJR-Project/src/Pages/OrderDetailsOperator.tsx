@@ -1,5 +1,5 @@
 import SidebarOperator from "../component/SidebarOperator";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
 
 const orders = [
   {
@@ -53,9 +53,20 @@ const OrderDetailsOperator = () => {
           <div className="main-menu flex flex-col">
             <h2 className="font-bold text-[30px]">Order</h2>
             <div className="searchbar mt-[30px]">
-              <input placeholder="Search Order...." className="bg-white border-none rounded-[15px] px-[20px] py-[5px] w-[350px] shadow-md text-black" />
+              <Input
+                label="Search"
+                isClearable
+                radius="lg"
+                className="w-[350px]"
+                placeholder="Search Order..."
+                startContent={
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                  </svg>
+                }
+              />
             </div>
-            <div className="table-of-content mt-[40px]">
+            <div className="table-of-content mt-[25px]">
               <table className="text-left w-[1200px]">
                 <thead>
                   <tr className="text-[16px]">
