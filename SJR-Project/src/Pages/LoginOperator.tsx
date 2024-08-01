@@ -1,5 +1,7 @@
 import bglanding from "../assets/bg-landing.jpg";
+import { useNavigate } from "react-router-dom";
 const LoginOperator = () => {
+  const navigate = useNavigate();
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
       <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
@@ -29,7 +31,9 @@ const LoginOperator = () => {
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login Operator</h2>
         <input type="password" placeholder="Enter Your Operator ID" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize">Login</button>
+          <button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize" onClick={() => navigate("/mainoperator")}>
+            Login
+          </button>
         </div>
       </div>
     </div>

@@ -8,6 +8,8 @@ import MainPageUser from "./Pages/MainPageUser";
 import CartPageUser from "./Pages/CartPageUser";
 import OrderPageUser from "./Pages/OrderPageUser";
 import ProfileUser from "./Pages/ProfileUser";
+import MainPageOperator from "./Pages/MainPageOperator";
+import OrderDetailsOperator from "./Pages/OrderDetailsOperator";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         <Route path="/cartuser" element={<CartPageUser />} />
         <Route path="/orderuser" element={<OrderPageUser />} />
         <Route path="/profileuser" element={<ProfileUser />} />
+        <Route path="/mainoperator" element={<MainPageOperator />} />
+        <Route path="/orderdetailsop" element={<OrderDetailsOperator />} />
       </Routes>
     </Router>
   );
