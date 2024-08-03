@@ -1,8 +1,30 @@
 import SidebarUser from "../component/SidebarUser";
 import React, { useState } from "react";
 import { Select, SelectItem, Input, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+
 const category = ["Router", "Switch", "Access Point", "Repeater"];
 const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
+const details = [
+  {
+    product: "Mikrotik RB951UI2ND",
+    quantity: "129",
+    stock: "500",
+    status: "Packing",
+  },
+  {
+    product: "Mikrotik RB951UI2ND",
+    quantity: "129",
+    stock: "0",
+    status: "Delivery",
+  },
+  {
+    product: "Mikrotik RB951UI2ND",
+    quantity: "129",
+    stock: "500",
+    status: "Approve",
+  },
+];
 const products = [
   {
     name: "Mikrotik RB951UI2ND",
@@ -33,6 +55,8 @@ const OrderPageUser = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <React.Fragment>
       <div className="body-main bg-[#F2F2F2] overflow-hidden">
@@ -111,13 +135,90 @@ const OrderPageUser = () => {
                         </td>
                         <td className="w-[10rem]">{product.total}</td>
                         <td className="w-[10rem]">
-                          <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl">Details</Button>
+                          <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={onOpen}>
+                            Details
+                          </Button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+              {/* modal details orders */}
+              <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl" backdrop="blur">
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1">Order List</ModalHeader>
+                      <ModalBody>
+                        <h2 className="font-medium">
+                          Name : <span className="font-medium">Hogwarts Sen</span>{" "}
+                        </h2>
+
+                        <h2 className="font-medium">
+                          Order ID : <span className="font-medium">0x3467238</span>
+                        </h2>
+
+                        <h2 className="font-medium">
+                          Phone : <span className="font-medium">08124612617</span>
+                        </h2>
+                        <h2 className="font-medium">
+                          Delivery : <span className="font-medium">#HSDG27121817S</span>
+                        </h2>
+
+                        <div className="table-details-order-user w-full flex flex-col justify-center mt-[20px]">
+                          <table>
+                            <thead>
+                              <tr className="text-[16px]">
+                                <th className="font-medium text-[#989898]">Product</th>
+                                <th className="font-medium text-[#989898]">Quantity</th>
+                                <th className="font-medium text-[#989898]">Stock Availability</th>
+                                <th className="font-medium text-[#989898]">Status</th>
+                              </tr>
+                            </thead>
+                          </table>
+
+                          <div className="tbody overflow-y-scroll h-[8rem] mt-[10px]">
+                            <table>
+                              <tbody>
+                                {details.map((detail, index) => (
+                                  <tr key={index} className="h-[50px] font-medium">
+                                    <td className="w-[16rem] text-[14px]">{detail.product}</td>
+                                    <td className="w-[17rem] text-[12px]">{detail.quantity}</td>
+                                    <td className="w-[14rem] text-[12px]">{detail.stock}</td>
+                                    <td className={`text-[12px] ${detail.status === "Delivery" ? "text-green-500" : "text-red-500"}`}>{detail.status}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                        <div className="sum-total mt-[25px]">
+                          <h2 className="font-medium text-[20px]">Rp.12.500.000</h2>
+                        </div>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button color="success" variant="light" className="flex items-center" onPress={onClose}>
+                          Chat Operator{" "}
+                          <span className="ml-[5px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"
+                              />
+                            </svg>
+                          </span>
+                        </Button>
+                        <Button color="primary" onPress={onClose}>
+                          Ok
+                        </Button>
+                      </ModalFooter>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+              {/* modal details orders */}
             </div>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import SidebarUser from "../component/SidebarUser";
 import React, { useState } from "react";
 import { Select, SelectItem, Input, Button, Checkbox } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+
 const category = ["Router", "Switch", "Access Point", "Repeater"];
 const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
 const products = [
@@ -36,6 +38,8 @@ const CartPageUser = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <React.Fragment>
       <div className="body-main bg-[#F2F2F2] overflow-hidden">
@@ -120,13 +124,56 @@ const CartPageUser = () => {
                         <td className="w-[10rem]">{product.quantity}</td>
                         <td className="w-[10rem]">{product.total_price}</td>
                         <td className="w-[10rem]">
-                          <Button className="bg-[#D7904D] rounded-xl text-white px-[20px] py-[10px] capitalize">Edit</Button>
+                          <Button className="bg-[#D7904D] rounded-xl text-white px-[20px] py-[10px] capitalize" onPress={onOpen}>
+                            Edit
+                          </Button>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+              {/*modal edit cart*/}
+              <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="flex flex-col gap-1">Edit Cart</ModalHeader>
+                      <ModalBody>
+                        <h2>Product : Mikrotik RB951UI2ND</h2>
+                        <h2>Brand : Mikrotik</h2>
+                        <h2>Category : Router</h2>
+                        <h2>Price : Rp.760.000</h2>
+                        <h2 className="flex items-center">
+                          Quantity :{" "}
+                          <span>
+                            <Input className="ml-[10px] w-[100px]" variant="underlined" type="number" />
+                          </span>
+                        </h2>
+                        <h2 className="mt-[20px] font-semibold">Total Price : Rp.1.045.000</h2>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button color="danger" className="flex items-center" variant="light" onPress={onClose}>
+                          Delete{" "}
+                          <span className="ml-[5px]">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                              />
+                            </svg>
+                          </span>
+                        </Button>
+                        <Button color="primary" onPress={onClose}>
+                          Ok
+                        </Button>
+                      </ModalFooter>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+              {/*modal edit cart*/}
             </div>
             {/*confirm*/}
             <div className="confirm-form flex justify-between items-center mt-[20px]">
