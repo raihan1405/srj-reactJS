@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
+
 const category = ["Router", "Switch", "Access Point", "Repeater"];
 const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
 const products = [
@@ -150,7 +151,7 @@ const MainPageOperator = () => {
                 />
               </div>
               <div className="add">
-                <Button size="md" className="bg-[#247AF8] text-white font-semibold text-[16px]" onPress={onAddModalOpen}>
+                <Button size="md" className="bg-[#247AF8] text-white font-medium text-[16px]" onPress={onAddModalOpen}>
                   Add New Product +
                 </Button>
               </div>

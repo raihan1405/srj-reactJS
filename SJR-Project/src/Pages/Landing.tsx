@@ -1,5 +1,6 @@
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@nextui-org/react";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -30,15 +31,15 @@ const Landing = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
         <h2 className="font-semibold text-[20px] mt-[40px]">Select your role</h2>
-        <button className="bg-white px-[100px] lg:px-[170px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[50px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginuser")}>
+        <Button className="bg-white px-[100px] lg:px-[166px] text-[16px] font-medium py-[5px] rounded-xl mt-[50px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginuser")}>
           User
-        </button>
-        <button className="bg-white px-[80px] lg:px-[150px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginoperator")}>
+        </Button>
+        <Button className="bg-white px-[80px] lg:px-[149px] text-[16px] font-medium py-[5px] rounded-xl mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginoperator")}>
           Operator
-        </button>
-        <button className="bg-white px-[90px] lg:px-[160px] text-[18px] font-semibold py-[5px] rounded-2xl shadow-lg mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginadmin")}>
+        </Button>
+        <Button className="bg-white px-[90px] lg:px-[157px] text-[16px] font-medium py-[5px] rounded-xl mt-[20px] hover:bg-[#D7904D] hover:text-white" onClick={() => navigate("/loginadmin")}>
           Admin
-        </button>
+        </Button>
       </div>
     </div>
   );

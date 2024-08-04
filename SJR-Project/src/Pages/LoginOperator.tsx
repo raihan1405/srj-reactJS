@@ -1,5 +1,7 @@
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@nextui-org/react";
+
 const LoginOperator = () => {
   const navigate = useNavigate();
   return (
@@ -31,9 +33,9 @@ const LoginOperator = () => {
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login Operator</h2>
         <input type="password" placeholder="Enter Your Operator ID" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
         <div className="button-register flex flex-col items-center">
-          <button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize" onClick={() => navigate("/mainoperator")}>
+          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize" onClick={() => navigate("/mainoperator")}>
             Login
-          </button>
+          </Button>
         </div>
       </div>
     </div>
