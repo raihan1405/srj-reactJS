@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
+
 import axios from "axios";
 
 const LoginUser = () => {
@@ -76,11 +78,11 @@ const LoginUser = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy</h2>
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login User</h2>
-        <input type="text" name="email" placeholder="Enter your Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px]" value={state.email} onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" value={state.password} onChange={handleChange} />
+        <Input variant="flat" type="text" name="email" label="Enter your Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] lg:pl-0" value={state.email} onChange={handleChange} />
+        <Input variant="flat" type="password" name="password" label="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] lg:pl-0 mt-[20px] lg:mt-[2px]" value={state.password} onChange={handleChange} />
         {errorMessage && <div className="text-red-500 mt-[10px]">{errorMessage}</div>}
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] text-white font-semibold rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
+          <Button className="w-[300px] lg:w-[380px] px-[20px] py-[10px] lg:px-0 lg:py-0 bg-[#247AF8] text-white font-semibold rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
             Login
           </Button>
           <h2 className="text-[12px] font-semibold mt-[10px]">

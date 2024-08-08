@@ -10,6 +10,7 @@ import OrderPageUser from "./Pages/OrderPageUser";
 import ProfileUser from "./Pages/ProfileUser";
 import MainPageOperator from "./Pages/MainPageOperator";
 import OrderDetailsOperator from "./Pages/OrderDetailsOperator";
+import MainPageAdmin from "./Pages/MainPageAdmin";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/profileuser" element={<ProfileUser />} />
         <Route path="/mainoperator" element={<MainPageOperator />} />
         <Route path="/orderdetailsop" element={<OrderDetailsOperator />} />
+        <Route path="/mainadmin" element={<MainPageAdmin />} />
       </Routes>
     </Router>
   );
