@@ -95,10 +95,10 @@ const CartPageUser = () => {
                 <thead>
                   <tr className="text-[16px]">
                     <th className="font-medium text-[#F2F2F2]">Check</th>
-                    <th className="font-medium text-[#989898] w-[17rem]">Product Name</th>
+                    <th className="font-medium text-[#989898] w-[15rem]">Product Name</th>
                     <th className="font-medium text-[#989898] w-[10rem]">Brand</th>
-                    <th className="font-medium text-[#989898] w-[12rem]">Category</th>
-                    <th className="font-medium text-[#989898] w-[10rem]">Price</th>
+                    <th className="font-medium text-[#989898] w-[14rem]">Category</th>
+                    <th className="font-medium text-[#989898] w-[9rem]">Price</th>
                     <th className="font-medium text-[#989898] w-[10rem]">Status</th>
                     <th className="font-medium text-[#989898] w-[10rem]">Quantity</th>
                     <th className="font-medium text-[#989898] w-[10rem]">Total Price</th>
