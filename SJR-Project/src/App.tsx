@@ -11,6 +11,7 @@ import ProfileUser from "./Pages/ProfileUser";
 import MainPageOperator from "./Pages/MainPageOperator";
 import OrderDetailsOperator from "./Pages/OrderDetailsOperator";
 import MainPageAdmin from "./Pages/MainPageAdmin";
+import OrderDetailsAdmin from "./Pages/OrderDetailsAdmin";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/mainoperator" element={<MainPageOperator />} />
         <Route path="/orderdetailsop" element={<OrderDetailsOperator />} />
         <Route path="/mainadmin" element={<MainPageAdmin />} />
+        <Route path="/orderdetailsad" element={<OrderDetailsAdmin />} />
       </Routes>
     </Router>
   );
