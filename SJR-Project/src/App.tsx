@@ -12,6 +12,10 @@ import MainPageOperator from "./Pages/MainPageOperator";
 import OrderDetailsOperator from "./Pages/OrderDetailsOperator";
 import MainPageAdmin from "./Pages/MainPageAdmin";
 import OrderDetailsAdmin from "./Pages/OrderDetailsAdmin";
+import ControlOperator from "./Pages/ControlOperator";
+import MonitorAdmin from "./Pages/MonitorAdmin";
+import ReportAdmin from "./Pages/ReportAdmin";
+import SecurityAdmin from "./Pages/SecurityAdmin";
 
 function App() {
   return (
@@ -30,6 +34,10 @@ function App() {
         <Route path="/orderdetailsop" element={<OrderDetailsOperator />} />
         <Route path="/mainadmin" element={<MainPageAdmin />} />
         <Route path="/orderdetailsad" element={<OrderDetailsAdmin />} />
+        <Route path="/controloperator" element={<ControlOperator />} />
+        <Route path="/monitoradmin" element={<MonitorAdmin />} />
+        <Route path="/reportadmin" element={<ReportAdmin />} />
+        <Route path="/securityadmin" element={<SecurityAdmin />} />
       </Routes>
     </Router>
   );

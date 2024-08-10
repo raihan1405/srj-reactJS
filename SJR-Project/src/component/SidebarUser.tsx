@@ -68,7 +68,7 @@ const SidebarUser = () => {
               <h2 className="text-black font-medium ml-[15px] text-[18px]">Profile</h2>
             </div>
           </button>
-          <button>
+          <button onClick={() => navigate("/")}>
             <div className="logout flex items-center mt-[30px]">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
