@@ -1,24 +1,18 @@
 import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@nextui-org/react";
-import { Input } from "@nextui-org/react";
-
+import { Button, Input, Spinner } from "@nextui-org/react";
 import axios from "axios";
 
 const LoginUser = () => {
   const navigate = useNavigate();
-
-  // Initialize error message state
   const [errorMessage, setErrorMessage] = useState("");
-
-  // Initialize state for email and password
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     email: "",
     password: "",
   });
 
-  // Handle input change
   const handleChange = (e: React.ChangeEvent<any>) => {
     const value = e.target.value;
     setState({
@@ -27,28 +21,27 @@ const LoginUser = () => {
     });
   };
 
-  // Handle form submission
-  const handleSubmit = (e: React.ChangeEvent<any>) => {
+  const handleSubmit = async (e: React.ChangeEvent<any>) => {
     e.preventDefault();
+    setLoading(true);
+    setErrorMessage("");
+
     const userData = {
       email: state.email,
       password: state.password,
     };
 
-    // Send data to API using Axios
-    axios
-      .post("https://go-restapi-production.up.railway.app/api/login", userData)
-      .then((response) => {
-        // Handle response as needed (e.g., show a success message)
-        console.log(response.status, response.data);
+    try {
+      const response = await axios.post("https://go-restapi-production.up.railway.app/api/login", userData);
+      console.log(response.status, response.data);
 
-        // Navigate to main user page
-        navigate("/mainuser");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setErrorMessage("Email or password is incorrect");
-      });
+      navigate("/mainuser");
+    } catch (error) {
+      console.error("Error:", error);
+      setErrorMessage("Email or password is incorrect");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -82,9 +75,14 @@ const LoginUser = () => {
         <Input variant="flat" type="password" name="password" label="Password" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] lg:pl-0 mt-[20px] lg:mt-[2px]" value={state.password} onChange={handleChange} />
         {errorMessage && <div className="text-red-500 mt-[10px]">{errorMessage}</div>}
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[380px] px-[20px] py-[10px] lg:px-0 lg:py-0 bg-[#247AF8] text-white font-semibold rounded-xl mt-[20px] capitalize" onClick={handleSubmit}>
-            Login
+          <Button
+            className="w-[300px] lg:w-[380px] px-[20px] py-[10px] lg:px-0 lg:py-0 bg-[#247AF8] text-white font-semibold rounded-xl mt-[20px] capitalize"
+            onClick={handleSubmit}
+            disabled={loading} // Disable the button when loading
+          >
+            {loading ? "Logged In" : "Login"} {/* Change button text based on loading state */}
           </Button>
+          {loading && <Spinner size="md" className="mt-[20px]" />} {/* Show spinner when loading */}
           <h2 className="text-[12px] font-semibold mt-[10px]">
             Don't have an account?{" "}
             <span className="text-[#247AF8]">
