@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button, Spinner } from "@nextui-org/react";
 import axios from "axios";
 
 const RegisterUser = () => {
@@ -10,8 +10,17 @@ const RegisterUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegister = async () => {
+    if (password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long.");
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage("");
     try {
       const response = await axios.post("https://go-restapi-production.up.railway.app/api/register", {
         username,
@@ -23,14 +32,16 @@ const RegisterUser = () => {
       navigate("/loginuser");
     } catch (error) {
       console.error("Error registering user:", error);
-      console.log("Gabisa rid");
+      setErrorMessage("Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <React.Fragment>
       <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
-        <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
+        <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex" style={{ backgroundImage: `url(${bglanding})` }}>
           <div className="img-container items-center lg:mx-[200px] 2xl:mx-[200px] hidden 2xl:flex">
             <div className="img-content bg-black bg-opacity-60 backdrop-blur-sm  flex flex-col rounded-[30px] px-[40px] py-[60px]">
               <h2 className="text-white text-[50px] font-bold">
@@ -58,11 +69,19 @@ const RegisterUser = () => {
           <Input type="text" label="Enter your Username" className="pl-[10px] px-[20px] py-[10px] lg:px-0 lg:py-0 rounded-xl w-[300px] lg:w-[400px] lg:pl-0" value={username} onChange={(e) => setUsername(e.target.value)} />
           <Input type="text" label="Email" className="pl-[10px] px-[20px] py-[10px] rounded-xl lg:px-0 lg:py-0 w-[300px] lg:w-[400px] mt-[20px] lg:mt-[10px] lg:pl-0" value={email} onChange={(e) => setEmail(e.target.value)} />
           <Input type="password" label="Password" className="pl-[10px] px-[20px] py-[10px] lg:px-0 lg:py-0 rounded-xl w-[300px] lg:w-[400px] mt-[20px] lg:mt-[10px] lg:pl-0" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <Input type="number" label="Phone Number" className="pl-[10px] lg:px-0 lg:py-0 px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px] lg:mt-[10px] lg:pl-0" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+          <Input
+            type="number"
+            label="Phone Number"
+            className="pl-[10px] lg:px-0 lg:py-0 px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px] lg:mt-[10px] lg:pl-0"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+          />
+          {errorMessage && <p className="text-red-500 mt-[10px] text-[14px]">{errorMessage}</p>}
           <div className="button-register flex flex-col items-center">
-            <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize font-semibold" onClick={handleRegister}>
+            <Button className="w-[300px] lg:w-[400px] px-[20px] py-[15px] bg-[#247AF8] text-white rounded-xl mt-[20px] capitalize font-semibold" onClick={handleRegister} disabled={loading}>
               Register
             </Button>
+            {loading && <Spinner size="md" className="mt-[20px]" />}
             <h2 className="text-[12px] font-semibold mt-[10px]">
               Have an account ?{" "}
               <span className="text-[#247AF8]">
