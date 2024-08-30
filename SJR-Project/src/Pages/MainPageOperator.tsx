@@ -1,106 +1,88 @@
 import SidebarOperator from "../component/SidebarOperator";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 import { Button } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
 
-const category = ["Router", "Switch", "Access Point", "Repeater"];
-const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
-const products = [
-  {
-    name: "Mikrotik RB951UI2ND",
-    brand: "Mikrotik",
-    category: "Router",
-    price: "Rp.760.000",
-    status: "Ready",
-    quantity: 180,
-  },
-  {
-    name: "Ubiquiti NanoStation M2",
-    brand: "Ubiquiti",
-    category: "Access Point",
-    price: "Rp.1.200.000",
-    status: "Ready",
-    quantity: 100,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Soldout",
-    quantity: 0,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-];
+interface Product {
+  id: number;
+  productName: string;
+  brandName: string;
+  Category: string;
+  price: number;
+  quantity: number;
+  status?: string;
+}
+
+// Definisikan array kategori dan brand
+const categories = ["Router", "Switch", "Access Point", "Repeater"];
+const brands = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
 
 const MainPageOperator = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const [productName, setProductName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+
   const { isOpen: isAddModalOpen, onOpen: onAddModalOpen, onOpenChange: onAddModalOpenChange } = useDisclosure();
   const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onOpenChange: onEditModalOpenChange } = useDisclosure();
 
-  const handleEditClick = (product: any) => {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('https://go-restapi-production.up.railway.app/api/products');
+        setProducts(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleEditClick = (product: Product) => {
     setSelectedProduct(product);
+    setProductName(product.productName);
+    setBrandName(product.brandName);
+    setCategory(product.Category);
+    setPrice(product.price.toString());
+    setQuantity(product.quantity.toString());
     onEditModalOpen();
   };
 
-  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const handleAddProduct = async () => {
+    const newProduct: Omit<Product, 'id'> = {
+      productName,
+      brandName,
+      Category: category,
+      price: parseInt(price.replace(/\D/g, '')),
+      quantity: parseInt(quantity),
+    };
+
+    try {
+      const response = await axios.post('https://go-restapi-production.up.railway.app/api/products', newProduct);
+      console.log('Product added successfully:', response.data);
+      setProducts([...products, response.data]);
+      onAddModalOpenChange();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
+    }
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <React.Fragment>
@@ -110,16 +92,14 @@ const MainPageOperator = () => {
             <SidebarOperator />
           </div>
           <div className="content-container flex flex-col ml-[35px] mt-[38px]">
-            {/* header */}
             <div className="main-menu flex">
               <h2 className="font-bold text-[30px]">Product</h2>
             </div>
 
-            {/* search engine */}
             <div className="search flex flex-row items-center gap-[50px] mt-[30px]">
               <div className="category">
                 <Select size="md" label="Select Category" className="w-[220px]">
-                  {category.map((kategori) => (
+                  {categories.map((kategori: string) => (
                     <SelectItem key={kategori} value={kategori}>
                       {kategori}
                     </SelectItem>
@@ -128,9 +108,9 @@ const MainPageOperator = () => {
               </div>
               <div className="brand">
                 <Select size="md" label="Select Brand" className="w-[220px]">
-                  {brand.map((brands) => (
-                    <SelectItem key={brands} value={brands}>
-                      {brands}
+                  {brands.map((brand: string) => (
+                    <SelectItem key={brand} value={brand}>
+                      {brand}
                     </SelectItem>
                   ))}
                 </Select>
@@ -157,24 +137,23 @@ const MainPageOperator = () => {
               </div>
             </div>
 
-            {/* Add New Product Modal */}
             <Modal backdrop="blur" isOpen={isAddModalOpen} onOpenChange={onAddModalOpenChange}>
               <ModalContent>
                 {(onClose) => (
                   <>
                     <ModalHeader className="flex flex-col gap-1">New Product</ModalHeader>
                     <ModalBody>
-                      <Input size={"md"} type="text" label="Product Name" />
-                      <Input size={"md"} type="text" label="Brand" />
-                      <Input size={"md"} type="text" label="Category" />
-                      <Input size={"md"} type="text" label="Price" />
-                      <Input size={"md"} type="number" label="Quantity" />
+                      <Input size={"md"} type="text" label="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
+                      <Input size={"md"} type="text" label="Brand" value={brandName} onChange={(e) => setBrandName(e.target.value)} />
+                      <Input size={"md"} type="text" label="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+                      <Input size={"md"} type="text" label="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+                      <Input size={"md"} type="number" label="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                     </ModalBody>
                     <ModalFooter>
                       <Button color="danger" variant="light" onPress={onClose}>
                         Close
                       </Button>
-                      <Button color="primary" onPress={onClose}>
+                      <Button color="primary" onPress={handleAddProduct}>
                         Add
                       </Button>
                     </ModalFooter>
@@ -183,7 +162,6 @@ const MainPageOperator = () => {
               </ModalContent>
             </Modal>
 
-            {/* Edit Product Modal */}
             {selectedProduct && (
               <Modal backdrop="blur" isOpen={isEditModalOpen} onOpenChange={onEditModalOpenChange}>
                 <ModalContent>
@@ -191,11 +169,11 @@ const MainPageOperator = () => {
                     <>
                       <ModalHeader className="flex flex-col gap-1">Edit Product</ModalHeader>
                       <ModalBody>
-                        <Input size={"md"} type="text" label="Product Name" />
-                        <Input size={"md"} type="text" label="Brand" />
-                        <Input size={"md"} type="text" label="Category" />
-                        <Input size={"md"} type="text" label="Price" />
-                        <Input size={"md"} type="number" label="Quantity" />
+                        <Input size={"md"} type="text" label="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
+                        <Input size={"md"} type="text" label="Brand" value={brandName} onChange={(e) => setBrandName(e.target.value)} />
+                        <Input size={"md"} type="text" label="Category" value={category} onChange={(e) => setCategory(e.target.value)} />
+                        <Input size={"md"} type="text" label="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+                        <Input size={"md"} type="number" label="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                       </ModalBody>
                       <ModalFooter>
                         <Button color="danger" variant="light" onPress={onClose}>
@@ -224,30 +202,28 @@ const MainPageOperator = () => {
                     <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
                   </tr>
                 </thead>
+                <tbody>
+                  {filteredProducts.map((product, index) => (
+                    <tr key={index} className="h-[60px] font-medium">
+                      <td className="w-[17rem]">{product.productName}</td>
+                      <td className="w-[10rem]">{product.brandName}</td>
+                      <td className="w-[12rem]">{product.Category}</td>
+                      <td className="w-[10rem]">{`Rp ${product.price.toLocaleString()}`}</td>
+                      <td className="w-[10rem]">
+                        <h2 className={`font-semibold ${product.quantity > 0 ? "text-[#0C7523]" : "text-red-400"}`}>
+                          {product.quantity > 0 ? "Ready" : "Soldout"}
+                        </h2>
+                      </td>
+                      <td className="w-[10rem]">{product.quantity}</td>
+                      <td className="w-[10rem]">
+                        <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
+                          Edit
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
-              <div className="overflow-y-scroll h-[31rem] mt-[20px]">
-                <table className="text-left w-[1200px]">
-                  <tbody>
-                    {filteredProducts.map((product, index) => (
-                      <tr key={index} className="h-[60px] font-medium">
-                        <td className="w-[17rem]">{product.name}</td>
-                        <td className="w-[10rem]">{product.brand}</td>
-                        <td className="w-[12rem]">{product.category}</td>
-                        <td className="w-[10rem]">{product.price}</td>
-                        <td className="w-[10rem]">
-                          <h2 className={`font-semibold ${product.status.toLowerCase() === "soldout" ? "text-red-400" : "text-[#0C7523]"}`}>{product.status}</h2>
-                        </td>
-                        <td className="w-[10rem]">{product.quantity}</td>
-                        <td className="w-[10rem]">
-                          <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
-                            Edit
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
         </div>

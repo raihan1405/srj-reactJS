@@ -25,16 +25,18 @@ const LoginUser = () => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage("");
-
+  
     const userData = {
       email: state.email,
       password: state.password,
     };
-
+  
     try {
-      const response = await axios.post("https://go-restapi-production.up.railway.app/api/login", userData);
+      const response = await axios.post("https://go-restapi-production.up.railway.app/api/login", userData, {
+        withCredentials: true, // Ensure cookies are included
+      });
       console.log(response.status, response.data);
-
+  
       navigate("/mainuser");
     } catch (error) {
       console.error("Error:", error);
@@ -43,6 +45,8 @@ const LoginUser = () => {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
