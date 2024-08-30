@@ -9,13 +9,12 @@ interface Product {
   id: number;
   productName: string;
   brandName: string;
-  Category: string;
+  Category: string;  // Menggunakan huruf besar 'C'
   price: number;
   quantity: number;
   status?: string;
 }
 
-// Definisikan array kategori dan brand
 const categories = ["Router", "Switch", "Access Point", "Repeater"];
 const brands = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
 
@@ -51,7 +50,7 @@ const MainPageOperator = () => {
     setSelectedProduct(product);
     setProductName(product.productName);
     setBrandName(product.brandName);
-    setCategory(product.Category);
+    setCategory(product.Category);  // Pastikan menggunakan huruf besar 'C'
     setPrice(product.price.toString());
     setQuantity(product.quantity.toString());
     onEditModalOpen();
@@ -61,7 +60,7 @@ const MainPageOperator = () => {
     const newProduct: Omit<Product, 'id'> = {
       productName,
       brandName,
-      Category: category,
+      Category: category,  // Pastikan menggunakan huruf besar 'C'
       price: parseInt(price.replace(/\D/g, '')),
       quantity: parseInt(quantity),
     };
@@ -83,6 +82,36 @@ const MainPageOperator = () => {
   const filteredProducts = products.filter((product) =>
     product.productName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleEditProduct = async () => {
+    if (!selectedProduct) return;
+
+    const updatedProduct = {
+      productName,
+      brandName,
+      Category: category,
+      price: parseInt(price.replace(/\D/g, '')),
+      quantity: parseInt(quantity),
+    };
+
+    try {
+      const response = await axios.put(`https://go-restapi-production.up.railway.app/api/products/${selectedProduct.id}`, updatedProduct);
+      console.log('Product updated successfully:', response.data);
+
+      // Update the product list with the updated product
+      const updatedProducts = products.map((product) =>
+        product.id === selectedProduct.id ? { ...product, ...updatedProduct } : product
+      );
+      setProducts(updatedProducts);
+      onEditModalOpenChange();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      } else {
+        console.error('An unexpected error occurred:', error);
+      }
+    }
+  };
 
   return (
     <React.Fragment>
@@ -179,7 +208,7 @@ const MainPageOperator = () => {
                         <Button color="danger" variant="light" onPress={onClose}>
                           Close
                         </Button>
-                        <Button color="primary" onPress={onClose}>
+                        <Button color="primary" onPress={handleEditProduct}>
                           Save
                         </Button>
                       </ModalFooter>
