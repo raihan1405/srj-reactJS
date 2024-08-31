@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Button } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
+import ClipLoader from "react-spinners/ClipLoader";
 
 interface Product {
   id: number;
@@ -15,11 +16,13 @@ interface Product {
   status?: string;
 }
 
-const categories = ["Router", "Switch", "Access Point", "Repeater"];
-const brands = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
+
 
 const MainPageOperator = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
@@ -35,11 +38,21 @@ const MainPageOperator = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const response = await axios.get('https://go-restapi-production.up.railway.app/api/products');
-        setProducts(response.data);
+        const productsData = response.data as Product[]; // Pastikan data diterima sebagai Product[]
+        setProducts(productsData);
+
+         const uniqueCategories = Array.from(new Set(productsData.map((product: Product) => product.Category)));
+         const uniqueBrands = Array.from(new Set(productsData.map((product: Product) => product.brandName)));
+ 
+         setCategories(uniqueCategories);
+         setBrands(uniqueBrands);
         console.log(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false); // Setel loading menjadi false setelah data selesai dimuat
       }
     };
 
@@ -217,43 +230,50 @@ const MainPageOperator = () => {
                 </ModalContent>
               </Modal>
             )}
+            {loading ? (
+  <div className="flex justify-center items-center h-screen">
+    <ClipLoader color={"#247AF8"} loading={loading} size={50} />
+  </div>
+) : (
+  <div className="table-of-content mt-[25px]">
+    <table className="text-left w-[1200px]">
+      <thead>
+        <tr className="text-[16px]">
+          <th className="font-medium text-[#989898] w-[17rem]">Product Name</th>
+          <th className="font-medium text-[#989898] w-[10rem]">Brand</th>
+          <th className="font-medium text-[#989898] w-[12rem]">Category</th>
+          <th className="font-medium text-[#989898] w-[10rem]">Price</th>
+          <th className="font-medium text-[#989898] w-[10rem]">Status</th>
+          <th className="font-medium text-[#989898] w-[10rem]">Quantity</th>
+          <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredProducts.map((product, index) => (
+          <tr key={index} className="h-[60px] font-medium">
+            <td className="w-[17rem]">{product.productName}</td>
+            <td className="w-[10rem]">{product.brandName}</td>
+            <td className="w-[12rem]">{product.Category}</td>
+            <td className="w-[10rem]">{`Rp ${product.price.toLocaleString()}`}</td>
+            <td className="w-[10rem]">
+              <h2 className={`font-semibold ${product.quantity > 0 ? "text-[#0C7523]" : "text-red-400"}`}>
+                {product.quantity > 0 ? "Ready" : "Soldout"}
+              </h2>
+            </td>
+            <td className="w-[10rem]">{product.quantity}</td>
+            <td className="w-[10rem]">
+              <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
+                Edit
+              </Button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}
 
-            <div className="table-of-content mt-[25px]">
-              <table className="text-left w-[1200px]">
-                <thead>
-                  <tr className="text-[16px]">
-                    <th className="font-medium text-[#989898] w-[17rem]">Product Name</th>
-                    <th className="font-medium text-[#989898] w-[10rem]">Brand</th>
-                    <th className="font-medium text-[#989898] w-[12rem]">Category</th>
-                    <th className="font-medium text-[#989898] w-[10rem]">Price</th>
-                    <th className="font-medium text-[#989898] w-[10rem]">Status</th>
-                    <th className="font-medium text-[#989898] w-[10rem]">Quantity</th>
-                    <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProducts.map((product, index) => (
-                    <tr key={index} className="h-[60px] font-medium">
-                      <td className="w-[17rem]">{product.productName}</td>
-                      <td className="w-[10rem]">{product.brandName}</td>
-                      <td className="w-[12rem]">{product.Category}</td>
-                      <td className="w-[10rem]">{`Rp ${product.price.toLocaleString()}`}</td>
-                      <td className="w-[10rem]">
-                        <h2 className={`font-semibold ${product.quantity > 0 ? "text-[#0C7523]" : "text-red-400"}`}>
-                          {product.quantity > 0 ? "Ready" : "Soldout"}
-                        </h2>
-                      </td>
-                      <td className="w-[10rem]">{product.quantity}</td>
-                      <td className="w-[10rem]">
-                        <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
-                          Edit
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            
           </div>
         </div>
       </div>
