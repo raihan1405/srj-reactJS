@@ -1,94 +1,101 @@
 import SidebarUser from "../component/SidebarUser";
-import React, { useState } from "react";
-import { Select, SelectItem, Input, Button } from "@nextui-org/react";
-const category = ["Router", "Switch", "Access Point", "Repeater"];
-const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
-const products = [
-  {
-    name: "Mikrotik RB951UI2ND",
-    brand: "Mikrotik",
-    category: "Router",
-    price: "Rp.760.000",
-    status: "Ready",
-    quantity: 180,
-  },
-  {
-    name: "Ubiquiti NanoStation M2",
-    brand: "Ubiquiti",
-    category: "Access Point",
-    price: "Rp.1.200.000",
-    status: "Ready",
-    quantity: 100,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Soldout",
-    quantity: 0,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 250,
-  },
-];
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { Select, SelectItem, Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/react";
+
+interface Product {
+  id: number;
+  productName: string;
+  brandName: string;
+  Category: string;
+  price: number;
+  quantity: number;
+  status: boolean;
+}
+
+const formatRupiah = (amount: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  }).format(amount);
+};
+
 const MainPageUser = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+  
+  // Modal and Cart Management States
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState<number>(1); // Default quantity to 1
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:8080/api/products', { withCredentials: true });
+        const productsData = response.data as Product[];
+        setProducts(productsData);
+
+        const uniqueCategories = Array.from(new Set(productsData.map((product: Product) => product.Category)));
+        const uniqueBrands = Array.from(new Set(productsData.map((product: Product) => product.brandName)));
+
+        setCategories(uniqueCategories);
+        setBrands(uniqueBrands);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredProducts = products.filter((product) =>
+    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Open Modal with selected product
+  const handleAddToCart = (product: Product) => {
+    setSelectedProduct(product);
+    setQuantity(1); // Reset quantity to 1 when a new product is selected
+    setIsOpen(true);
+  };
+
+  // Close Modal
+  const handleModalClose = () => {
+    setIsOpen(false);
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(e.target.value));
+  };
+
+  // Add to cart API Call
+  const handleAddToCartAPI = async () => {
+    if (selectedProduct) {
+      try {
+        const cartData = {
+          productId: selectedProduct.id,
+          quantity: quantity
+        };
+
+        await axios.post('http://localhost:8080/api/addToCart', cartData, { withCredentials: true });
+        alert("Product added to cart successfully!");
+        handleModalClose(); // Close modal after adding to cart
+      } catch (error) {
+        console.error("Error adding to cart:", error);
+        alert("Failed to add product to cart.");
+      }
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="body-main bg-[#F2F2F2] overflow-hidden">
@@ -98,16 +105,14 @@ const MainPageUser = () => {
           </div>
 
           <div className="content-container flex flex-col ml-[35px] mt-[38px]">
-            {/* header */}
             <div className="main-menu flex">
               <h2 className="font-bold text-[30px]">Product</h2>
             </div>
 
-            {/* search engine */}
             <div className="search flex flex-row items-center gap-[50px] mt-[30px]">
               <div className="category">
                 <Select size="md" label="Select Category" className="w-[220px]">
-                  {category.map((kategori) => (
+                  {categories.map((kategori) => (
                     <SelectItem key={kategori} value={kategori}>
                       {kategori}
                     </SelectItem>
@@ -116,7 +121,7 @@ const MainPageUser = () => {
               </div>
               <div className="brand">
                 <Select size="md" label="Select Brand" className="w-[220px]">
-                  {brand.map((brands) => (
+                  {brands.map((brands) => (
                     <SelectItem key={brands} value={brands}>
                       {brands}
                     </SelectItem>
@@ -139,6 +144,7 @@ const MainPageUser = () => {
                 />
               </div>
             </div>
+
             <div className="table-of-content mt-[25px]">
               <table className="text-left w-[1200px]">
                 <thead>
@@ -152,32 +158,78 @@ const MainPageUser = () => {
                     <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
                   </tr>
                 </thead>
+                <tbody>
+                  {filteredProducts.map((product, index) => (
+                    <tr key={index} className="h-[60px] font-medium">
+                      <td className="w-[17rem]">{product.productName}</td>
+                      <td className="w-[10rem]">{product.brandName}</td>
+                      <td className="w-[12rem]">{product.Category}</td>
+                      <td className="w-[10rem]">{formatRupiah(product.price)}</td>
+                      <td className="w-[10rem]">
+                        <h2 className={`font-semibold ${product.status ? "text-[#0C7523]" : "text-red-400"}`}>
+                          {product.status ? 'Ready' : 'Sold out'}
+                        </h2>
+                      </td>
+                      <td className="w-[10rem]">{product.quantity}</td>
+                      <td className="w-[10rem]">
+                        <Button
+                          className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl"
+                          onPress={() => handleAddToCart(product)}
+                        >
+                          Add
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
-              <div className="overflow-y-scroll h-[31rem] mt-[20px]">
-                <table className="text-left w-[1200px]">
-                  <tbody>
-                    {filteredProducts.map((product, index) => (
-                      <tr key={index} className="h-[60px] font-medium">
-                        <td className="w-[17rem]">{product.name}</td>
-                        <td className="w-[10rem]">{product.brand}</td>
-                        <td className="w-[12rem]">{product.category}</td>
-                        <td className="w-[10rem]">{product.price}</td>
-                        <td className="w-[10rem]">
-                          <h2 className={`font-semibold ${product.status.toLowerCase() === "soldout" ? "text-red-400" : "text-[#0C7523]"}`}>{product.status}</h2>
-                        </td>
-                        <td className="w-[10rem]">{product.quantity}</td>
-                        <td className="w-[10rem]">
-                          <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl">Add</Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Modal for adding product to cart */}
+      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={handleModalClose}>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">Add to Cart</ModalHeader>
+          <ModalBody>
+            {selectedProduct ? (
+              <>
+                <h2>Product: {selectedProduct.productName}</h2>
+                <h2>Brand: {selectedProduct.brandName}</h2>
+                <h2>Category: {selectedProduct.Category}</h2>
+                <h2>Price: {formatRupiah(selectedProduct.price)}</h2>
+                <h2 className="flex items-center">
+                  Quantity:{" "}
+                  <span>
+                    <Input
+                      label="Quantity"
+                      className="ml-[10px] w-[100px]"
+                      variant="underlined"
+                      type="number"
+                      value={quantity.toString()}
+                      onChange={handleQuantityChange}
+                    />
+                  </span>
+                </h2>
+                <h2 className="mt-[20px] font-semibold">
+                  Total Price: {formatRupiah(selectedProduct.price * quantity)}
+                </h2>
+              </>
+            ) : (
+              <p>Loading product details...</p>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" onPress={handleModalClose}>
+              Cancel
+            </Button>
+            <Button color="primary" onPress={handleAddToCartAPI}>
+              Add to Cart
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </React.Fragment>
   );
 };

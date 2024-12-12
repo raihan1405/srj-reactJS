@@ -1,18 +1,69 @@
 import bglanding from "../assets/bg-landing.jpg";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@nextui-org/react";
+import { useState } from "react";
+import axios, { AxiosError } from "axios";
+
 
 const LoginOperator = () => {
   const navigate = useNavigate();
+  const [operatorID, setOperatorID] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async () => {
+    // Reset pesan error sebelum login
+    setError("");
+
+    // Validasi sederhana: pastikan operatorID tidak kosong
+    if (operatorID.trim() === "") {
+      setError("Operator ID tidak boleh kosong");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/operator/loginOperator",
+        { operator_id: operatorID },
+        { withCredentials: true } // Pastikan cookie dikirimkan dan diterima
+      );
+
+      if (response.status === 200) {
+        // Login berhasil, navigasi ke main operator
+        navigate("/mainoperator");
+      }
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response) {
+          // Jika respons ada dan statusnya bukan 2xx
+          setError(err.response.data.error || "Login gagal");
+        } else if (err.request) {
+          // Jika permintaan dibuat tetapi tidak ada respons
+          setError("Tidak ada respons dari server");
+        } else {
+          // Kesalahan lain yang terkait dengan pembuatan permintaan
+          setError("Login gagal");
+        }
+      } else {
+        // Kesalahan lain di luar Axios
+        setError("Login gagal");
+      }
+    }    
+  };
+
   return (
     <div className="landing flex flex-row justify-center items-center min-h-screen lg:justify-start bg-[#F2F2F2]">
-      <div className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex " style={{ backgroundImage: `url(${bglanding})` }}>
+      <div
+        className="landing-body bg-cover bg-center min-h-screen lg:w-[500px] 2xl:w-[900px] hidden lg:flex"
+        style={{ backgroundImage: `url(${bglanding})` }}
+      >
         <div className="img-container items-center lg:mx-[200px] 2xl:mx-[200px] hidden 2xl:flex">
-          <div className="img-content bg-black bg-opacity-60 backdrop-blur-sm  flex flex-col rounded-[30px] px-[40px] py-[60px]">
+          <div className="img-content bg-black bg-opacity-60 backdrop-blur-sm flex flex-col rounded-[30px] px-[40px] py-[60px]">
             <h2 className="text-white text-[50px] font-bold">
               <span className="text-[rgb(215,144,77)]">Inventory</span> Management System
             </h2>
-            <h2 className="text-white font-semibold mt-[70px] text-[20px]">Simplest and most efficient web-based order fulfillment and inventory management software</h2>
+            <h2 className="text-white font-semibold mt-[70px] text-[20px]">
+              Simplest and most efficient web-based order fulfillment and inventory management software
+            </h2>
           </div>
         </div>
       </div>
@@ -20,7 +71,14 @@ const LoginOperator = () => {
         <h2 className="text-[40px] font-bold flex flex-row items-center">
           <span className="text-[#D7904D]">My</span>Invento{" "}
           <span className="ml-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="size-7">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.8}
+              stroke="currentColor"
+              className="size-7"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -31,9 +89,19 @@ const LoginOperator = () => {
         </h2>
         <h2 className="font-semibold text-[18px] lg:text-[16px]">Manage your online business easy </h2>
         <h2 className="font-semibold text-[20px] mt-[40px] mb-[40px]">Login Operator</h2>
-        <input type="password" placeholder="Enter Your Operator ID" className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]" />
+        <input
+          type="text" // Ubah dari password ke text jika operator_id bukan password
+          placeholder="Enter Your Operator ID"
+          className="pl-[10px] px-[20px] py-[10px] rounded-xl w-[300px] lg:w-[400px] mt-[20px]"
+          value={operatorID}
+          onChange={(e) => setOperatorID(e.target.value)}
+        />
+        {error && <p className="text-red-500 mt-2">{error}</p>}
         <div className="button-register flex flex-col items-center">
-          <Button className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize" onClick={() => navigate("/mainoperator")}>
+          <Button
+            className="w-[300px] lg:w-[400px] px-[20px] py-[10px] bg-[#247AF8] font-semibold text-white rounded-xl mt-[20px] capitalize"
+            onClick={handleLogin}
+          >
             Login
           </Button>
         </div>

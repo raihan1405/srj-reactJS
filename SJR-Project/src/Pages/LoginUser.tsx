@@ -32,7 +32,7 @@ const LoginUser = () => {
     };
   
     try {
-      const response = await axios.post("https://go-restapi-production.up.railway.app/api/login", userData, {
+      const response = await axios.post("http://localhost:8080/api/login", userData, {
         withCredentials: true, // Ensure cookies are included
       });
       console.log(response.status, response.data);

@@ -1,45 +1,203 @@
 import SidebarUser from "../component/SidebarUser";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Select, SelectItem, Input, Button, Checkbox } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+import axios from 'axios';
 
-const category = ["Router", "Switch", "Access Point", "Repeater"];
-const brand = ["Mikrotik", "Cisco", "Aruba", "TPLINK"];
-const products = [
-  {
-    name: "Mikrotik RB951UI2ND",
-    brand: "Mikrotik",
-    category: "Router",
-    price: "Rp.760.000",
-    status: "Ready",
-    quantity: 10,
-    total_price: "Rp.7.600.000",
-  },
-  {
-    name: "Ubiquiti NanoStation M2",
-    brand: "Ubiquiti",
-    category: "Access Point",
-    price: "Rp.1.200.000",
-    status: "Ready",
-    quantity: 50,
-    total_price: "Rp.7.600.000",
-  },
-  {
-    name: "TP-Link TL-WR840N",
-    brand: "TP-Link",
-    category: "Router",
-    price: "Rp.250.000",
-    status: "Ready",
-    quantity: 20,
-    total_price: "Rp.7.600.000",
-  },
-];
+interface Product {
+  id: number;
+  productName: string;
+  brandName: string;
+  Category: string;
+  price: number;
+  quantity: number;
+  status: boolean;
+  operator_id: string;
+}
+
+interface CartItem {
+  id: number;
+  productId: number;
+  userId: string;
+  quantity: number;
+  Product: Product;
+  total_price: number;
+  created_at: string;
+  updated_at: string;
+}
+
 const CartPageUser = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [products, setProducts] = useState<CartItem[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [brands, setBrands] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
+
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<CartItem | null>(null);
+  const [newQuantity, setNewQuantity] = useState<number | null>(null);
+
+  // Modal untuk edit cart
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  // Modal untuk invoice
+  const { isOpen: isInvoiceOpen, onOpen: onInvoiceOpen, onClose: onInvoiceClose } = useDisclosure();
+
+  const handleEdit = (cartItem: CartItem) => {
+    setSelectedProductId(cartItem.id);
+    setSelectedProduct(cartItem);
+    setNewQuantity(cartItem.quantity);
+    onOpen(); // Buka modal untuk mengedit
+  };
+
+  const handleCreateInvoice = async () => {
+    try {
+      // Prepare data for invoice creation
+      const invoiceData = {
+        items: selectedItems.map(item => ({
+          productId: item.productId,
+          quantity: item.quantity,
+        })),
+      };
+  
+      // Send POST request to create invoice
+      const response = await axios.post('http://localhost:8080/api/createInvoice', invoiceData, {
+        withCredentials: true,
+      });
+  
+      // Handle successful invoice creation
+      if (response.status === 201) { // Use 201 Created status
+        console.log('Invoice created successfully', response.data);
+        onInvoiceClose();  // Close the invoice modal after successful creation
+        setSelectedItems([]); // Clear the selected items
+        localStorage.removeItem('selectedItems'); // Clear from localStorage as well
+        alert('Purchase completed successfully!'); // Notify user
+        // Optionally, redirect user to a confirmation page
+        // window.location.href = '/confirmation';
+        fetchProducts();
+      }
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      alert('Error completing purchase. Please try again.');
+    }
+  };
+  
+
+  const formatRupiah = (amount: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount);
+  };
+
+  // Menyimpan selectedItems ke localStorage
+  useEffect(() => {
+    const storedSelectedItems = localStorage.getItem('selectedItems');
+    if (storedSelectedItems) {
+      try {
+        setSelectedItems(JSON.parse(storedSelectedItems));
+      } catch (error) {
+        console.error('Error parsing selectedItems from localStorage:', error);
+        localStorage.removeItem('selectedItems');
+      }
+    }
+  }, []);
+
+  // Menyimpan selectedItems setiap kali berubah
+  useEffect(() => {
+    if (selectedItems.length > 0) {
+      localStorage.setItem('selectedItems', JSON.stringify(selectedItems));
+    }
+  }, [selectedItems]);
+
+  const handleCheckboxChange = (cartItem: CartItem) => {
+    // Update selectedItems berdasarkan apakah item sudah ada atau belum
+    if (selectedItems.some(item => item.id === cartItem.id)) {
+      setSelectedItems(prev => prev.filter(item => item.id !== cartItem.id));
+    } else {
+      setSelectedItems(prev => [...prev, cartItem]);
+    }
+  };
+
+  const getSelectedTotalPrice = () => {
+    return selectedItems.reduce((total, cartItem) => total + cartItem.total_price, 0);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://localhost:8080/api/itemCart', { withCredentials: true });
+      const productsData = response.data as CartItem[];
+      setProducts(productsData);
+
+      const uniqueCategories = Array.from(new Set(productsData.map((product: CartItem) => product.Product.Category)));
+      const uniqueBrands = Array.from(new Set(productsData.map((product: CartItem) => product.Product.brandName)));
+
+      setCategories(uniqueCategories);
+      setBrands(uniqueBrands);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const handleQuantityChange = (newQuantity: number) => {
+    setNewQuantity(newQuantity);
+  };
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const filteredProducts = products.filter((cartItem) =>
+    cartItem.Product && cartItem.Product.productName &&
+    cartItem.Product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleUpdateCart = () => {
+    if (selectedProduct && newQuantity !== null) {
+      const updatedProduct = { ...selectedProduct, quantity: newQuantity };
+
+      // Update quantity, then remove the item from selectedItems if quantity is changed
+      if (selectedItems.some(item => item.id === selectedProduct.id)) {
+        // Remove the item from selectedItems when the quantity changes
+        setSelectedItems(prev => prev.filter(item => item.id !== selectedProduct.id));
+      }
+
+      // Now update the cart item on the server
+      axios.put(`http://localhost:8080/api/itemCart/edit/${selectedProduct.id}`, updatedProduct, {
+        withCredentials: true
+      })
+        .then(response => {
+          console.log('Product updated successfully');
+          fetchProducts();
+          onClose();
+        })
+        .catch(error => {
+          console.error('Error updating product:', error);
+        });
+    }
+  };
+
+  const handleDelete = async (cartItemId: number) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/deleteCart/${cartItemId}`, {
+        withCredentials: true,
+      });
+      setProducts(prevProducts => prevProducts.filter(item => item.id !== cartItemId));
+      console.log('Product deleted successfully');
+      onClose();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
+
+  const handleBuyNow = () => {
+    onInvoiceOpen(); // Buka modal invoice
+  };
+
   return (
     <React.Fragment>
       <div className="body-main bg-[#F2F2F2] overflow-hidden">
@@ -49,16 +207,14 @@ const CartPageUser = () => {
           </div>
 
           <div className="content-container flex flex-col ml-[35px] mt-[38px]">
-            {/* header */}
             <div className="main-menu flex">
               <h2 className="font-bold text-[30px]">Cart</h2>
             </div>
 
-            {/* search engine */}
             <div className="search flex flex-row items-center gap-[50px] mt-[30px]">
               <div className="category">
                 <Select size="md" label="Select Category" className="w-[220px]">
-                  {category.map((kategori) => (
+                  {categories.map((kategori) => (
                     <SelectItem key={kategori} value={kategori}>
                       {kategori}
                     </SelectItem>
@@ -67,7 +223,7 @@ const CartPageUser = () => {
               </div>
               <div className="brand">
                 <Select size="md" label="Select Brand" className="w-[220px]">
-                  {brand.map((brands) => (
+                  {brands.map((brands) => (
                     <SelectItem key={brands} value={brands}>
                       {brands}
                     </SelectItem>
@@ -90,6 +246,7 @@ const CartPageUser = () => {
                 />
               </div>
             </div>
+
             <div className="table-of-content mt-[25px]">
               <table className="text-left w-[1200px]">
                 <thead>
@@ -109,22 +266,32 @@ const CartPageUser = () => {
               <div className="overflow-y-scroll h-[26rem] mt-[20px]">
                 <table className="text-left w-[1200px]">
                   <tbody>
-                    {filteredProducts.map((product, index) => (
+                    {filteredProducts.map((cartItem, index) => (
                       <tr key={index} className="h-[60px] font-medium">
                         <td className="w-[1rem]">
-                          <Checkbox defaultSelected size="sm" color="warning" />
+                          <Checkbox
+                            size="sm"
+                            color="warning"
+                            isSelected={selectedItems.some(item => item.id === cartItem.id)}
+                            onChange={() => handleCheckboxChange(cartItem)}
+                          />
                         </td>
-                        <td className="w-[17rem]">{product.name}</td>
-                        <td className="w-[10rem]">{product.brand}</td>
-                        <td className="w-[12rem]">{product.category}</td>
-                        <td className="w-[10rem]">{product.price}</td>
+                        <td className="w-[17rem]">{cartItem.Product.productName}</td>
+                        <td className="w-[10rem]">{cartItem.Product.brandName}</td>
+                        <td className="w-[12rem]">{cartItem.Product.Category}</td>
+                        <td className="w-[10rem]">{formatRupiah(cartItem.Product.price)}</td>
                         <td className="w-[10rem]">
-                          <h2 className={`font-semibold ${product.status.toLowerCase() === "soldout" ? "text-red-400" : "text-[#0C7523]"}`}>{product.status}</h2>
+                          <h2 className={`font-semibold ${cartItem.Product.status === true ? "text-[#0C7523]" : "text-red-400"}`}>
+                            {cartItem.Product.status === true ? 'Ready' : 'Sold out'}
+                          </h2>
                         </td>
-                        <td className="w-[10rem]">{product.quantity}</td>
-                        <td className="w-[10rem]">{product.total_price}</td>
+                        <td className="w-[10rem]">{cartItem.quantity}</td>
+                        <td className="w-[10rem]">{formatRupiah(cartItem.total_price)}</td>
                         <td className="w-[10rem]">
-                          <Button className="bg-[#D7904D] rounded-xl text-white px-[20px] py-[10px] capitalize" onPress={onOpen}>
+                          <Button
+                            className="bg-[#D7904D] rounded-xl text-white px-[20px] py-[10px] capitalize"
+                            onPress={() => handleEdit(cartItem)}
+                          >
                             Edit
                           </Button>
                         </td>
@@ -133,52 +300,90 @@ const CartPageUser = () => {
                   </tbody>
                 </table>
               </div>
-              {/*modal edit cart*/}
+
+              {/* Modal Edit Cart */}
               <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalHeader className="flex flex-col gap-1">Edit Cart</ModalHeader>
-                      <ModalBody>
-                        <h2>Product : Mikrotik RB951UI2ND</h2>
-                        <h2>Brand : Mikrotik</h2>
-                        <h2>Category : Router</h2>
-                        <h2>Price : Rp.760.000</h2>
+                  <ModalHeader className="flex flex-col gap-1">Edit Cart</ModalHeader>
+                  <ModalBody>
+                    {selectedProduct ? (
+                      <>
+                        <h2>Product: {selectedProduct.Product.productName}</h2>
+                        <h2>Brand: {selectedProduct.Product.brandName}</h2>
+                        <h2>Category: {selectedProduct.Product.Category}</h2>
+                        <h2>Price: {formatRupiah(selectedProduct.Product.price)}</h2>
                         <h2 className="flex items-center">
-                          Quantity :{" "}
+                          Quantity:{" "}
                           <span>
-                            <Input className="ml-[10px] w-[100px]" variant="underlined" type="number" />
+                            <Input
+                              label="Quantity"
+                              className="ml-[10px] w-[100px]"
+                              variant="underlined"
+                              type="number"
+                              defaultValue={selectedProduct?.quantity.toString()}
+                              onChange={(e) => handleQuantityChange(Number(e.target.value))}
+                            />
                           </span>
                         </h2>
-                        <h2 className="mt-[20px] font-semibold">Total Price : Rp.1.045.000</h2>
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button color="danger" className="flex items-center" variant="light" onPress={onClose}>
-                          Delete{" "}
-                          <span className="ml-[5px]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                              />
-                            </svg>
-                          </span>
-                        </Button>
-                        <Button color="primary" onPress={onClose}>
-                          Ok
-                        </Button>
-                      </ModalFooter>
-                    </>
-                  )}
+                        <h2 className="mt-[20px] font-semibold">
+                          Total Price: {formatRupiah(selectedProduct.total_price)}
+                        </h2>
+                      </>
+                    ) : (
+                      <p>Loading product details...</p>
+                    )}
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      color="danger"
+                      className="flex items-center"
+                      variant="light"
+                      onPress={() => selectedProduct && handleDelete(selectedProduct.id)}
+                    >
+                      Delete
+                    </Button>
+
+                    <Button color="primary" onPress={handleUpdateCart}>
+                      Ok
+                    </Button>
+                  </ModalFooter>
                 </ModalContent>
               </Modal>
-              {/*modal edit cart*/}
+
+              {/* Modal Invoice */}
+              <Modal backdrop="blur" isOpen={isInvoiceOpen} onOpenChange={onInvoiceClose}>
+                <ModalContent>
+                  <ModalHeader className="flex flex-col gap-1">Invoice</ModalHeader>
+                  <ModalBody>
+                    <h2>Invoice Details</h2>
+                    <ul>
+                      {selectedItems.map((item) => (
+                        <li key={item.id}>
+                          <p>{item.Product.productName} - {item.quantity} x {formatRupiah(item.Product.price)}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    <h3 className="font-semibold mt-5">Total: {formatRupiah(getSelectedTotalPrice())}</h3>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="success" onPress={handleCreateInvoice}>
+                      Complete Purchase
+                    </Button>
+                    <Button color="danger" onPress={onInvoiceClose}>
+                      Cancel
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </div>
-            {/*confirm*/}
+
+            {/* Confirmation Section */}
             <div className="confirm-form flex justify-between items-center mt-[20px]">
-              <h2 className="text-[20px] font-bold">Total : Rp.25.000.000</h2>
-              <Button className="mr-[20px] bg-[#D7904D] text-white rounded-xl capitalize py-[10px] text-[18px] px-[30px] flex items-center gap-5">
+              <h2 className="text-[20px] font-bold">Total: {formatRupiah(getSelectedTotalPrice())}</h2>
+              <Button
+                className="mr-[20px] bg-[#D7904D] text-white rounded-xl capitalize py-[10px] text-[18px] px-[30px] flex items-center gap-5"
+                onPress={handleBuyNow}
+              >
                 Buy Now{" "}
                 <span>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">

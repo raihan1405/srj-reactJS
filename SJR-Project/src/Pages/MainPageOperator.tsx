@@ -16,7 +16,12 @@ interface Product {
   status?: string;
 }
 
-
+const formatRupiah = (amount: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+  }).format(amount);
+};
 
 const MainPageOperator = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -39,15 +44,15 @@ const MainPageOperator = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://go-restapi-production.up.railway.app/api/products');
+        const response = await axios.get('http://localhost:8080/operator/Products', { withCredentials: true });
         const productsData = response.data as Product[]; // Pastikan data diterima sebagai Product[]
         setProducts(productsData);
 
-         const uniqueCategories = Array.from(new Set(productsData.map((product: Product) => product.Category)));
-         const uniqueBrands = Array.from(new Set(productsData.map((product: Product) => product.brandName)));
- 
-         setCategories(uniqueCategories);
-         setBrands(uniqueBrands);
+        const uniqueCategories = Array.from(new Set(productsData.map((product: Product) => product.Category)));
+        const uniqueBrands = Array.from(new Set(productsData.map((product: Product) => product.brandName)));
+
+        setCategories(uniqueCategories);
+        setBrands(uniqueBrands);
         console.log(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -79,7 +84,7 @@ const MainPageOperator = () => {
     };
 
     try {
-      const response = await axios.post('https://go-restapi-production.up.railway.app/api/products', newProduct);
+      const response = await axios.post('http://localhost:8080/operator/products', newProduct, { withCredentials: true });
       console.log('Product added successfully:', response.data);
       setProducts([...products, response.data]);
       onAddModalOpenChange();
@@ -91,10 +96,6 @@ const MainPageOperator = () => {
       }
     }
   };
-
-  const filteredProducts = products.filter((product) =>
-    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const handleEditProduct = async () => {
     if (!selectedProduct) return;
@@ -108,7 +109,11 @@ const MainPageOperator = () => {
     };
 
     try {
-      const response = await axios.put(`https://go-restapi-production.up.railway.app/api/products/${selectedProduct.id}`, updatedProduct);
+      const response = await axios.put(
+        `http://localhost:8080/operator/products/edit/${selectedProduct.id}`,
+        updatedProduct,
+        { withCredentials: true }
+      );
       console.log('Product updated successfully:', response.data);
 
       // Update the product list with the updated product
@@ -116,7 +121,8 @@ const MainPageOperator = () => {
         product.id === selectedProduct.id ? { ...product, ...updatedProduct } : product
       );
       setProducts(updatedProducts);
-      onEditModalOpenChange();
+
+      onEditModalOpenChange();  // Close the modal after success
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Error:', error.response ? error.response.data : error.message);
@@ -125,6 +131,10 @@ const MainPageOperator = () => {
       }
     }
   };
+
+  const filteredProducts = products.filter((product) =>
+    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <React.Fragment>
@@ -230,50 +240,49 @@ const MainPageOperator = () => {
                 </ModalContent>
               </Modal>
             )}
-            {loading ? (
-  <div className="flex justify-center items-center h-screen">
-    <ClipLoader color={"#247AF8"} loading={loading} size={50} />
-  </div>
-) : (
-  <div className="table-of-content mt-[25px]">
-    <table className="text-left w-[1200px]">
-      <thead>
-        <tr className="text-[16px]">
-          <th className="font-medium text-[#989898] w-[17rem]">Product Name</th>
-          <th className="font-medium text-[#989898] w-[10rem]">Brand</th>
-          <th className="font-medium text-[#989898] w-[12rem]">Category</th>
-          <th className="font-medium text-[#989898] w-[10rem]">Price</th>
-          <th className="font-medium text-[#989898] w-[10rem]">Status</th>
-          <th className="font-medium text-[#989898] w-[10rem]">Quantity</th>
-          <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredProducts.map((product, index) => (
-          <tr key={index} className="h-[60px] font-medium">
-            <td className="w-[17rem]">{product.productName}</td>
-            <td className="w-[10rem]">{product.brandName}</td>
-            <td className="w-[12rem]">{product.Category}</td>
-            <td className="w-[10rem]">{`Rp ${product.price.toLocaleString()}`}</td>
-            <td className="w-[10rem]">
-              <h2 className={`font-semibold ${product.quantity > 0 ? "text-[#0C7523]" : "text-red-400"}`}>
-                {product.quantity > 0 ? "Ready" : "Soldout"}
-              </h2>
-            </td>
-            <td className="w-[10rem]">{product.quantity}</td>
-            <td className="w-[10rem]">
-              <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
-                Edit
-              </Button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)}
 
-            
+            {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <ClipLoader color={"#247AF8"} loading={loading} size={50} />
+              </div>
+            ) : (
+              <div className="table-of-content mt-[25px]">
+                <table className="text-left w-[1200px]">
+                  <thead>
+                    <tr className="text-[16px]">
+                      <th className="font-medium text-[#989898] w-[17rem]">Product Name</th>
+                      <th className="font-medium text-[#989898] w-[10rem]">Brand</th>
+                      <th className="font-medium text-[#989898] w-[12rem]">Category</th>
+                      <th className="font-medium text-[#989898] w-[10rem]">Price</th>
+                      <th className="font-medium text-[#989898] w-[10rem]">Status</th>
+                      <th className="font-medium text-[#989898] w-[10rem]">Quantity</th>
+                      <th className="font-medium text-[#F2F2F2] w-[10rem]">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProducts.map((product, index) => (
+                      <tr key={index} className="h-[60px] font-medium">
+                        <td className="w-[17rem]">{product.productName}</td>
+                        <td className="w-[10rem]">{product.brandName}</td>
+                        <td className="w-[12rem]">{product.Category}</td>
+                        <td className="w-[10rem]">{`Rp ${product.price.toLocaleString()}`}</td>
+                        <td className="w-[10rem]">
+                          <h2 className={`font-semibold ${product.quantity > 0 ? "text-[#0C7523]" : "text-red-400"}`}>
+                            {product.quantity > 0 ? "Ready" : "Soldout"}
+                          </h2>
+                        </td>
+                        <td className="w-[10rem]">{product.quantity}</td>
+                        <td className="w-[10rem]">
+                          <Button className="bg-[#D7904D] text-white px-[20px] py-[10px] capitalize rounded-xl" onPress={() => handleEditClick(product)}>
+                            Edit
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       </div>

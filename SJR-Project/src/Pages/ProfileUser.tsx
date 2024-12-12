@@ -19,7 +19,7 @@ const ProfileUser = () => {
     const fetchUserData = async () => {
       try {
         // Fetch user data from the API
-        const response = await axios.get("https://go-restapi-production.up.railway.app/api/user", {
+        const response = await axios.get("http://localhost:8080/api/user", {
           withCredentials: true, // Ensure cookies are included
         });
 
@@ -46,7 +46,7 @@ const ProfileUser = () => {
     try {
   
       await axios.put(
-        "https://go-restapi-production.up.railway.app/api/user",
+        "http://localhost:8080/api/user",
         {
           username: name,
           email: email,
@@ -71,10 +71,10 @@ const ProfileUser = () => {
 
     try {
       await axios.put(
-        "/api/user/password",
+        "http://localhost:8080/api/user/password",
         {
-          oldPassword: oldPassword,
-          newPassword: newPassword,
+          old_Password: oldPassword,
+          new_Password: newPassword,
         },
         { withCredentials: true }
       );

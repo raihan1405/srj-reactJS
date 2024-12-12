@@ -1,5 +1,7 @@
+// src/components/SidebarAdmin.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+// import LogoutButton from "./LogoutButton"; // Pastikan path ini sesuai dengan struktur folder Anda
 
 const SidebarAdmin = () => {
   const navigate = useNavigate();
@@ -14,7 +16,14 @@ const SidebarAdmin = () => {
         <div className="body flex flex-col mt-[50px]">
           <button onClick={() => navigate("/mainadmin")}>
             <div className="dashboard flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-7 text-[#D7904D]"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -22,27 +31,45 @@ const SidebarAdmin = () => {
                 />
               </svg>
 
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Dashboard</h2>
+              <h2 className="text-black font-medium ml-[15px] text-[18px]">
+                Dashboard
+              </h2>
             </div>
           </button>
 
           <button onClick={() => navigate("/orderdetailsad")}>
             <div className="order flex items-center mt-[30px]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D] ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-7 text-[#D7904D]"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
+                  d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z"
                 />
               </svg>
 
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Order</h2>
+              <h2 className="text-black font-medium ml-[15px] text-[18px]">
+                Order
+              </h2>
             </div>
           </button>
 
           <button onClick={() => navigate("/monitoradmin")}>
             <div className="cart flex items-center mt-[30px]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D] ">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-7 text-[#D7904D]"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -50,13 +77,22 @@ const SidebarAdmin = () => {
                 />
               </svg>
 
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Monitor</h2>
+              <h2 className="text-black font-medium ml-[15px] text-[18px]">
+                Monitor
+              </h2>
             </div>
           </button>
 
           <button onClick={() => navigate("/reportadmin")}>
             <div className="order flex items-center mt-[30px]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D]">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-7 text-[#D7904D]"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -64,35 +100,16 @@ const SidebarAdmin = () => {
                 />
               </svg>
 
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Report</h2>
+              <h2 className="text-black font-medium ml-[15px] text-[18px]">
+                Report
+              </h2>
             </div>
           </button>
 
-          <hr className="border-grey mt-[30px]"></hr>
+          <hr className="border-grey mt-[30px]" />
 
-          <button onClick={() => navigate("/securityadmin")}>
-            <div className="logout flex items-center mt-[30px]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D]">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                />
-              </svg>
-
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Security</h2>
-            </div>
-          </button>
-
-          <button onClick={() => navigate("/")}>
-            <div className="logout flex items-center mt-[30px]">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-[#D7904D]">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9" />
-              </svg>
-
-              <h2 className="text-black font-medium ml-[15px] text-[18px]">Log Out</h2>
-            </div>
-          </button>
+          {/* Menggunakan Komponen LogoutButton */}
+          {/* <LogoutButton /> */}
         </div>
       </div>
     </React.Fragment>
